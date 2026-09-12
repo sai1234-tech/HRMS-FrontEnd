@@ -1,0 +1,210 @@
+/* Shared mobile rules for employee and HR workspaces. */
+.employee-header {
+  padding-top: max(.85rem, env(safe-area-inset-top));
+  padding-right: max(1rem, env(safe-area-inset-right));
+  padding-bottom: .85rem;
+  padding-left: max(1rem, env(safe-area-inset-left));
+}
+
+.employee-header nav {
+  min-width: 0;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+
+.employee-header nav::-webkit-scrollbar {
+  display: none;
+}
+
+.employee-header nav a,
+.employee-header button,
+button,
+select,
+input[type="date"] {
+  min-height: 44px;
+}
+
+.employee-header nav a {
+  flex: 0 0 auto;
+  white-space: nowrap;
+}
+
+.employee-header button,
+button {
+  touch-action: manipulation;
+}
+
+@media (max-width: 800px) {
+  .employee-header {
+    flex-wrap: wrap;
+    gap: .75rem;
+  }
+
+  .employee-header .brand {
+    min-width: auto;
+    flex: 1 1 auto;
+  }
+
+  .employee-header-actions {
+    margin-left: 0;
+  }
+
+  .employee-header nav {
+    order: 3;
+    flex-basis: 100%;
+    min-height: 44px;
+    gap: 1rem;
+  }
+
+  .employee-dashboard,
+  .hr-dashboard,
+  .employee-management,
+  .department-page,
+  .employee-page {
+    min-height: calc(100vh - 7rem);
+    padding-top: 1.5rem;
+    padding-right: max(1rem, env(safe-area-inset-right));
+    padding-bottom: max(2rem, env(safe-area-inset-bottom));
+    padding-left: max(1rem, env(safe-area-inset-left));
+  }
+
+  .attendance-card,
+  .dashboard-heading,
+  .hr-heading,
+  .department-heading,
+  .employee-management-heading {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .attendance-card {
+    gap: 1.25rem;
+  }
+
+  .attendance-card-content,
+  .timer-display {
+    width: 100%;
+  }
+
+  .timer-display {
+    align-items: center;
+  }
+
+  .work-timer {
+    font-size: clamp(1.8rem, 9vw, 2.25rem);
+  }
+
+  .card-actions {
+    width: 100%;
+  }
+
+  .card-actions button {
+    flex: 1;
+    min-height: 48px;
+  }
+
+  .hr-metrics,
+  .attendance-summary,
+  .department-metrics {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .hr-panel-heading,
+  .directory-heading,
+  .list-heading {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .hr-panel-heading input,
+  .directory-filters input,
+  .directory-filters select {
+    width: 100%;
+  }
+
+  .leave-filters,
+  .directory-filters,
+  .report-filters {
+    width: 100%;
+  }
+
+  .table-wrapper,
+  .hr-table-wrap,
+  .employee-table-wrap {
+    -webkit-overflow-scrolling: touch;
+  }
+}
+
+@media (max-width: 520px) {
+  .employee-header-actions span {
+    display: none;
+  }
+
+  .employee-header-actions button {
+    min-height: 42px;
+    padding: .55rem .7rem;
+  }
+
+  .summary-grid,
+  .hr-metrics,
+  .attendance-summary,
+  .department-metrics,
+  .leave-balance-cards {
+    grid-template-columns: 1fr;
+  }
+
+  .summary-grid strong,
+  .attendance-summary strong {
+    font-size: 1.65rem;
+  }
+
+  .activity-scroll .activity-header,
+  .activity-scroll .activity-row {
+    min-width: 31rem;
+  }
+
+  .activity-scroll .activity-header,
+  .activity-scroll .activity-row {
+    overflow: hidden;
+  }
+
+  .employee-profile {
+    padding: 1rem;
+  }
+
+  .employee-profile .profile-identity {
+    min-width: 0;
+  }
+
+  .employee-profile h2,
+  .employee-profile p {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .dashboard-heading h1 {
+    font-size: 1.85rem;
+  }
+
+  .dashboard-heading time {
+    max-width: 100%;
+    font-size: .78rem;
+  }
+
+  .panel,
+  .hr-panel {
+    padding: 1rem;
+    border-radius: 10px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    scroll-behavior: auto !important;
+    transition-duration: .01ms !important;
+    animation-duration: .01ms !important;
+  }
+}

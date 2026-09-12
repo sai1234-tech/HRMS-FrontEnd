@@ -1,0 +1,35 @@
+import { useCallback, useEffect, useState } from "react";
+import { clockIn, clockOut, getAttendance, getTodayAttendance } from "../services/attendanceService";
+
+export function useAttendance() {
+	const [attendance, setAttendance] = useState([]);
+	const [todayAttendance, setTodayAttendance] = useState(null);
+	const [loading, setLoading] = useState(true);
+	const [error, setError] = useState("");
+	const loadAttendance = useCallback(async () => {
+		setLoading(true); setError("");
+		try {
+			const [historyResult, todayResult] = await Promise.allSettled([getAttendance(), getTodayAttendance()]);
+			if (historyResult.status === "fulfilled") {
+				const response = historyResult.value;
+				const records = response.attendance || response.records || response.data || [];
+				setAttendance(Array.isArray(records) ? records : [records]);
+			} else {
+				setError(historyResult.reason.message);
+			}
+			if (todayResult.status === "fulfilled") {
+				const response = todayResult.value;
+				const todayData = response.data || response;
+				const todayRecord = response.attendance || todayData.attendance || todayData || null;
+				setTodayAttendance(Array.isArray(todayRecord) ? todayRecord[0] || null : todayRecord);
+			} else if (todayResult.reason?.message?.toLowerCase().includes("no attendance")) {
+				setTodayAttendance(null);
+			}
+		}
+		catch (requestError) { setError(requestError.message); }
+		finally { setLoading(false); }
+	}, []);
+	useEffect(() => { loadAttendance(); }, [loadAttendance]);
+	const performAction = async (action) => { await action(); await loadAttendance(); };
+	return { attendance, todayAttendance, loading, error, reload: loadAttendance, clockIn: () => performAction(clockIn), clockOut: () => performAction(clockOut) };
+}
