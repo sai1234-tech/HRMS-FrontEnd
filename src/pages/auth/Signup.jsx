@@ -128,6 +128,7 @@ function Signup() {
 
       const payload = {
         name: form.name.trim(),
+        firstName: form.name.trim(),
         email: form.email.trim().toLowerCase(),
         password: form.password,
 

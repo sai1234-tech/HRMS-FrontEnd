@@ -182,6 +182,25 @@
   margin: 0.45rem 0 0.25rem;
   text-transform: capitalize;
 }
+.attendance-status-heading {
+  display: inline-flex;
+  align-items: center;
+  max-width: 100%;
+  min-height: 2.35rem;
+  padding: 0.35rem 0.8rem;
+  border: 1px solid #8ed8d0;
+  border-radius: 999px;
+  background: #e8fffa;
+  color: #073f43 !important;
+  font-size: clamp(1.15rem, 2.5vw, 1.55rem);
+  line-height: 1.15;
+  text-shadow: none;
+}
+.attendance-status-heading:not(.attendance-completed) {
+  border-color: #b8d5ff;
+  background: #eff6ff;
+  color: #123b70 !important;
+}
 .attendance-completed {
   display: inline-flex;
   padding: 0.3rem 0.65rem;
@@ -410,12 +429,12 @@
     grid-template-columns: repeat(2, 1fr);
   }
 
-  /* newlyadded */
   .panel,
   .hr-panel {
     padding: 1rem;
     border-radius: 10px;
-    width: 90vw;
+    width: auto;
+    max-width: 100%;
   }
 }
 @media (max-width: 480px) {
@@ -430,5 +449,80 @@
   }
   .card-actions button {
     flex: 1;
+  }
+}
+
+/* Dashboard polish: stronger hierarchy, calmer surfaces, and visible focus areas. */
+.employee-dashboard {
+  position: relative;
+  isolation: isolate;
+  background:
+    radial-gradient(circle at 92% 2%, rgba(23, 107, 112, .12), transparent 22rem),
+    linear-gradient(180deg, #f8fbfb 0%, var(--page) 18rem);
+}
+
+.employee-dashboard::before {
+  position: absolute;
+  z-index: -1;
+  top: 0;
+  right: 0;
+  left: 0;
+  height: 15rem;
+  background: linear-gradient(135deg, rgba(32, 49, 58, .96), rgba(23, 107, 112, .9));
+  content: "";
+}
+
+.employee-dashboard .dashboard-heading {
+  padding: 1.4rem 1.5rem 1.25rem;
+  border: 1px solid rgba(255, 255, 255, .14);
+  border-radius: 16px;
+  background: rgba(255, 255, 255, .08);
+  color: #fff;
+  box-shadow: 0 18px 36px rgba(24, 34, 48, .14);
+}
+
+.employee-dashboard .dashboard-heading p,
+.employee-dashboard .dashboard-heading time {
+  color: #d7e4e6;
+}
+
+.employee-dashboard .dashboard-kicker {
+  color: #a8e1d9 !important;
+}
+
+.employee-dashboard .employee-profile,
+.employee-dashboard .summary-grid,
+.employee-dashboard .dashboard-columns {
+  position: relative;
+}
+
+.employee-dashboard .employee-profile {
+  margin-top: 1.25rem;
+  border-color: rgba(23, 107, 112, .16);
+}
+
+.employee-dashboard .summary-grid .panel,
+.employee-dashboard .dashboard-columns .panel {
+  transition: transform .2s ease, box-shadow .2s ease;
+}
+
+.employee-dashboard .summary-grid .panel:hover,
+.employee-dashboard .dashboard-columns .panel:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 16px 32px rgba(24, 34, 48, .1);
+}
+
+@media (max-width: 800px) {
+  .employee-dashboard::before {
+    height: 13rem;
+  }
+
+  .employee-dashboard .dashboard-heading {
+    padding: 1.15rem;
+  }
+
+  .employee-dashboard .panel,
+  .employee-dashboard .hr-panel {
+    width: auto;
   }
 }

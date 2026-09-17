@@ -360,3 +360,40 @@
   }
 
 }
+
+.admin-setup-link {
+  margin: 18px 0 0;
+  color: #64748b;
+  font-size: 13px;
+  text-align: center;
+}
+
+.admin-setup-link a {
+  color: #0f766e;
+  font-weight: 700;
+}
+
+.admin-access-note {
+  margin: 18px 0 0;
+  color: #64748b;
+  font-size: 12px;
+  text-align: center;
+}
+
+.setup-warning {
+  margin: -2px 0 18px;
+  color: #64748b;
+  font-size: 12px;
+  line-height: 1.5;
+}
+
+.setup-complete {
+  color: #334155;
+  font-size: 14px;
+  line-height: 1.6;
+  text-align: center;
+}
+
+.setup-complete p {
+  margin: 8px 0 20px;
+}

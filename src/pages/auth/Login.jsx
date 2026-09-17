@@ -5,6 +5,7 @@ import AuthLayout from "../../components/auth/AuthLayout";
 import InputField from "../../components/auth/InputField";
 
 import { useAuth } from "../../context/AuthContext";
+import { normalizeRole } from "../../utils/auth";
 
 import {
   validateEmail,
@@ -83,13 +84,10 @@ function Login() {
         form.password
       );
 
-      if (
-        response.user.role === "admin"
-      ) {
+      const role = normalizeRole(response.user);
+      if (role === "admin") {
         navigate("/admin/dashboard");
-      } else if (
-        response.user.role === "hr"
-      ) {
+      } else if (role === "hr") {
         navigate("/hr/dashboard");
       } else {
         navigate("/employee/dashboard");
@@ -106,11 +104,13 @@ function Login() {
   };
 
  if (user) {
-  if (user.role === "admin") {
+  const role = normalizeRole(user);
+
+  if (role === "admin") {
     return <Navigate to="/admin/dashboard" replace />;
   }
 
-  if (user.role === "hr") {
+  if (role === "hr") {
     return <Navigate to="/hr/dashboard" replace />;
   }
 
@@ -171,6 +171,10 @@ function Login() {
         </button>
 
       </form>
+
+      <p className="admin-access-note">
+        Admin access is issued by your system administrator.
+      </p>
 
     </AuthLayout>
   )

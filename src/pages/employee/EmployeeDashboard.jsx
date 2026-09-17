@@ -14,17 +14,82 @@ import { useLeaves } from "../../hooks/useLeaves";
 import "./EmployeeDashboard.css";
 
 function EmployeeDashboard() {
-	const { employee: sessionEmployee } = useAuth();
-	const employeeState = useEmployee();
-	const attendanceState = useAttendance();
-	const leavesState = useLeaves();
-	const currentHour = new Date().getHours();
-	const greeting = currentHour < 12 ? "Good morning" : currentHour < 18 ? "Good afternoon" : "Good evening";
+  const { employee: sessionEmployee } = useAuth();
+  const employeeState = useEmployee();
+  const attendanceState = useAttendance();
+  const leavesState = useLeaves();
+  const currentHour = new Date().getHours();
+  const greeting =
+    currentHour < 12
+      ? "Good morning"
+      : currentHour < 18
+        ? "Good afternoon"
+        : "Good evening";
 
-	if (employeeState.loading) return <Loader label="Loading your workspace..." />;
-	if (employeeState.error) return <ErrorMessage message={employeeState.error} onRetry={employeeState.reload} />;
+  if (employeeState.loading)
+    return <Loader label="Loading your workspace..." />;
+  if (employeeState.error)
+    return (
+      <ErrorMessage
+        message={employeeState.error}
+        onRetry={employeeState.reload}
+      />
+    );
 
-	return <><EmployeeHeader /><main className="employee-dashboard"><div className="dashboard-heading"><div><p className="dashboard-kicker">Employee workspace</p><h1>{greeting}, {employeeState.employee?.name?.split(" ")[0] || sessionEmployee?.name?.split(" ")[0] || "there"}</h1><p>Here is your attendance and leave overview.</p></div><time>{new Intl.DateTimeFormat(undefined, { dateStyle: "full" }).format(new Date())}</time></div><EmployeeProfile employee={employeeState.employee || sessionEmployee} compact /><AttendanceCard attendance={attendanceState.todayAttendance} onClockIn={attendanceState.clockIn} onClockOut={attendanceState.clockOut} /><AttendanceSummary attendance={attendanceState.attendance} /><div className="dashboard-columns"><RecentActivity attendance={attendanceState.attendance} leaves={leavesState.leaves} /><div><LeaveBalance balance={employeeState.employee?.leaveBalance || 0} /><RecentLeaves leaves={leavesState.leaves} /></div></div>{attendanceState.error && <p className="dashboard-notice">Attendance is temporarily unavailable: {attendanceState.error}</p>}{leavesState.error && <p className="dashboard-notice">Leave data is temporarily unavailable: {leavesState.error}</p>}</main></>;
+  return (
+    <>
+      <EmployeeHeader />
+      <main className="employee-dashboard">
+        <div className="dashboard-heading">
+          <div>
+            <p className="dashboard-kicker">Employee workspace</p>
+            <h1>
+              {greeting},{" "}
+              {employeeState.employee?.name?.split(" ")[0] ||
+                sessionEmployee?.name?.split(" ")[0] ||
+                "there"}
+            </h1>
+            <p>Here is your attendance and leave overview.</p>
+          </div>
+          <time>
+            {new Intl.DateTimeFormat(undefined, { dateStyle: "full" }).format(
+              new Date(),
+            )}
+          </time>
+        </div>
+        <EmployeeProfile
+          employee={employeeState.employee || sessionEmployee}
+          compact
+        />
+        <AttendanceCard
+          attendance={attendanceState.todayAttendance}
+          onClockIn={attendanceState.clockIn}
+          onClockOut={attendanceState.clockOut}
+        />
+        <AttendanceSummary attendance={attendanceState.attendance} />
+        <div className="dashboard-columns">
+          <RecentActivity
+            attendance={attendanceState.attendance}
+            leaves={leavesState.leaves}
+          />
+          <div>
+            <LeaveBalance balance={employeeState.employee?.leaveBalance || 0} />
+            <RecentLeaves leaves={leavesState.leaves} />
+          </div>
+        </div>
+        {attendanceState.error && (
+          <p className="dashboard-notice">
+            Attendance is temporarily unavailable: {attendanceState.error}
+          </p>
+        )}
+        {leavesState.error && (
+          <p className="dashboard-notice">
+            Leave data is temporarily unavailable: {leavesState.error}
+          </p>
+        )}
+      </main>
+    </>
+  );
 }
 
 export default EmployeeDashboard;

@@ -45,6 +45,16 @@ export const loginUser = async (credentials) => {
   return handleResponse(response);
 };
 
+export const setupFirstAdmin = async (accountData) => {
+  const response = await fetch(`${API_URL}/setup-admin`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(accountData),
+  });
+
+  return handleResponse(response);
+};
+
 export const getCurrentUser = async (token) => {
   const response = await fetch(
     `${API_URL}/me`,
@@ -55,6 +65,29 @@ export const getCurrentUser = async (token) => {
       },
     }
   );
+
+  return handleResponse(response);
+};
+
+export const createManagedAccount = async (accountData) => {
+  const token = sessionStorage.getItem("hrms_token");
+  const response = await fetch(`${API_URL}/accounts`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      ...(token ? { Authorization: `Bearer ${token}` } : {}),
+    },
+    body: JSON.stringify(accountData),
+  });
+
+  return handleResponse(response);
+};
+
+export const getAdminSummary = async () => {
+  const token = sessionStorage.getItem("hrms_token");
+  const response = await fetch(`${API_URL}/admin-summary`, {
+    headers: token ? { Authorization: `Bearer ${token}` } : {},
+  });
 
   return handleResponse(response);
 };
