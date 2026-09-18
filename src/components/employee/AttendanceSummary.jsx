@@ -1,6 +1,10 @@
 function AttendanceSummary({ attendance = [] }) {
   const countStatus = (statuses) => attendance.filter((record) => statuses.includes(String(record.status || "").toLowerCase())).length;
-  const present = countStatus(["present", "completed", "half-day", "halfday"]);
+  const present = attendance.filter((record) =>
+    ["present", "late", "completed", "half-day", "halfday"].includes(
+      String(record.status || "").toLowerCase(),
+    ) || Boolean(record.checkIn),
+  ).length;
   const late = countStatus(["late"]);
   const absent = countStatus(["absent"]);
 

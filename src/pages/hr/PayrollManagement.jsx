@@ -51,7 +51,7 @@ function PayrollManagementContent() {
   return <>
     <EmployeeHeader />
     <main className="employee-page payroll-page">
-      <header className="payroll-heading"><div><p className="page-kicker">People operations</p><h1>Payroll control</h1><p>Generate monthly payroll, review salary records, and maintain compensation.</p></div><label>Pay period<input type="month" value={period} onChange={(event) => setPeriod(event.target.value)} /></label></header>
+      <header className="payroll-heading"><div><p className="page-kicker">HR Administration</p><h1>Payroll control</h1><p>Generate monthly payroll, review salary records, and maintain compensation.</p></div><label>Pay period<input type="month" value={period} onChange={(event) => setPeriod(event.target.value)} /></label></header>
       {loading ? <Loader /> : error ? <ErrorMessage message={error} onRetry={reload} /> : <>
         <section className="payroll-summary"><div className="payroll-hero"><span>Payroll period</span><strong>{period}</strong><small>{records.length} employee records</small></div><div className="payroll-stat"><span>Total net payroll</span><strong>{money(totalNet)}</strong><small>Current period · INR</small></div><div className="payroll-stat"><span>Run status</span><strong>{records.length ? "Generated" : "Pending"}</strong><small>{records.length ? "Ready for review" : "Generate to publish payslips"}</small></div></section>
         {actionError && <p className="form-error" role="alert">{actionError}</p>}{notice && <p className="form-success" role="status">{notice}</p>}

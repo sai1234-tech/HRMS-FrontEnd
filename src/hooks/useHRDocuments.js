@@ -7,6 +7,7 @@ import {
   requestDocument,
   updateDocumentStatus,
 } from "../services/documentService";
+import { useSyncRefresh } from "../utils/syncManager";
 
 function listFrom(response) {
   const value =
@@ -20,12 +21,12 @@ export function useHRDocuments(employeeId) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
-  const load = useCallback(async () => {
+  const load = useCallback(async (silent = false) => {
     if (!employeeId) {
       setDocuments([]);
       return;
     }
-    setLoading(true);
+    if (!silent) setLoading(true);
     setError("");
     try {
       const [documentResponse, typeResponse] = await Promise.all([
@@ -35,26 +36,33 @@ export function useHRDocuments(employeeId) {
       setDocuments(listFrom(documentResponse));
       setTypes(normalizeDocumentTypes(typeResponse));
     } catch (requestError) {
-      setError(requestError.message);
+      if (!silent) setError(requestError.message);
     } finally {
-      setLoading(false);
+      if (!silent) setLoading(false);
     }
   }, [employeeId]);
+
   useEffect(() => {
     load();
   }, [load]);
+
+  useSyncRefresh(load, { interval: 4000, silent: true, enabled: Boolean(employeeId) });
+
   const request = async (data) => {
     await requestDocument(data);
-    await load();
+    await load(true);
   };
+
   const setStatus = async (id, status, verificationNotes = "") => {
     await updateDocumentStatus(id, status, verificationNotes);
-    await load();
+    await load(true);
   };
+
   const remove = async (id) => {
     await deleteDocument(id);
-    await load();
+    await load(true);
   };
+
   return {
     documents,
     types,

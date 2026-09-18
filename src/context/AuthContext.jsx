@@ -43,10 +43,37 @@ export function AuthProvider({ children }) {
     return login(userData.email, userData.password);
   };
 
+  const updateProfilePhoto = (photoUrl) => {
+    if (!photoUrl) return;
+    sessionStorage.setItem("hrms_profile_photo", photoUrl);
+    localStorage.setItem("hrms_profile_photo", photoUrl);
+
+    setEmployee((prev) => {
+      const updated = prev ? { ...prev, profilePhoto: photoUrl } : { profilePhoto: photoUrl };
+      sessionStorage.setItem("hrms_employee", JSON.stringify(updated));
+      return updated;
+    });
+
+    setUser((prev) => {
+      if (!prev) return prev;
+      const updated = { ...prev, profilePhoto: photoUrl };
+      sessionStorage.setItem("hrms_user", JSON.stringify(updated));
+      return updated;
+    });
+
+    window.dispatchEvent(
+      new CustomEvent("hrms:profile_photo_updated", {
+        detail: { profilePhoto: photoUrl },
+      })
+    );
+  };
+
   const logout = () => {
     sessionStorage.removeItem("hrms_token");
     sessionStorage.removeItem("hrms_user");
     sessionStorage.removeItem("hrms_employee");
+    sessionStorage.removeItem("hrms_profile_photo");
+    localStorage.removeItem("hrms_profile_photo");
 
     setUser(null);
     setEmployee(null);
@@ -64,11 +91,18 @@ export function AuthProvider({ children }) {
 
       try {
         const response =
-          await getCurrentUser(token);
+          await getCurrentUser();
 
         const session = response?.data && response.data.user ? response.data : response;
         setUser({ ...session.user, role: normalizeRole(session.user) });
-        setEmployee(session.employee || null);
+        const restoredEmp = session.employee || (sessionStorage.getItem("hrms_employee") ? JSON.parse(sessionStorage.getItem("hrms_employee")) : null);
+        setEmployee(restoredEmp);
+
+        const cachedPhoto = restoredEmp?.profilePhoto || sessionStorage.getItem("hrms_profile_photo") || localStorage.getItem("hrms_profile_photo");
+        if (cachedPhoto) {
+          sessionStorage.setItem("hrms_profile_photo", cachedPhoto);
+          localStorage.setItem("hrms_profile_photo", cachedPhoto);
+        }
       } catch (error) {
         logout();
       } finally {
@@ -80,7 +114,7 @@ export function AuthProvider({ children }) {
   }, []);
 
   return (
-    <AuthContext.Provider value={{ user, employee, login, signup, logout, loading }}>
+    <AuthContext.Provider value={{ user, employee, login, signup, logout, loading, updateProfilePhoto }}>
       {children}
     </AuthContext.Provider>
   );

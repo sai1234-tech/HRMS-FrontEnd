@@ -1,5 +1,11 @@
 import { useCallback, useEffect, useState } from "react";
-import { generatePayroll, getPayroll, updateEmployeeSalary, unwrapPayrollData } from "../services/payrollService";
+import {
+  generatePayroll,
+  getPayroll,
+  updateEmployeeSalary,
+  unwrapPayrollData,
+} from "../services/payrollService";
+import { useSyncRefresh } from "../utils/syncManager";
 
 function listData(response) {
   const payload = unwrapPayrollData(response, ["payroll", "records", "items"]);
@@ -11,15 +17,35 @@ export function useHRPayroll(filters) {
   const [records, setRecords] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
-  const load = useCallback(async () => {
-    setLoading(true); setError("");
+
+  const load = useCallback(async (silent = false) => {
+    if (!silent) setLoading(true);
+    setError("");
     try {
       const response = await getPayroll(filters);
       setRecords(listData(response));
-    } catch (requestError) { setError(requestError.message); } finally { setLoading(false); }
+    } catch (requestError) {
+      if (!silent) setError(requestError.message);
+    } finally {
+      if (!silent) setLoading(false);
+    }
   }, [filters]);
-  useEffect(() => { load(); }, [load]);
-  const generate = async (data) => { await generatePayroll(data); await load(); };
-  const updateSalary = async (employeeId, data) => { await updateEmployeeSalary(employeeId, data); await load(); };
+
+  useEffect(() => {
+    load();
+  }, [load]);
+
+  useSyncRefresh(load, { interval: 5000, silent: true });
+
+  const generate = async (data) => {
+    await generatePayroll(data);
+    await load(true);
+  };
+
+  const updateSalary = async (employeeId, data) => {
+    await updateEmployeeSalary(employeeId, data);
+    await load(true);
+  };
+
   return { records, loading, error, reload: load, generate, updateSalary };
 }

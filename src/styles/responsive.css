@@ -1,548 +1,452 @@
-/* Shared mobile rules for employee and HR workspaces. */
-.employee-header {
-  padding-top: max(.85rem, env(safe-area-inset-top));
-  padding-right: max(1rem, env(safe-area-inset-right));
-  padding-bottom: .85rem;
-  padding-left: max(1rem, env(safe-area-inset-left));
+/* ==========================================================================
+   HRMS Universal Responsive & Device Optimization Engine - Quadratic Systems Inc
+   ========================================================================== */
+
+/* --------------------------------------------------------------------------
+   Global Box Model & Viewport Boundaries (Zero Unwanted Horizontal Overflow)
+   -------------------------------------------------------------------------- */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
 }
 
-.employee-header nav {
-  min-width: 0;
-  overflow-x: auto;
-  scrollbar-width: none;
-}
-
-.employee-header nav::-webkit-scrollbar {
-  display: none;
-}
-
-.employee-header nav a,
-.employee-header button,
-button,
-select,
-input[type="date"] {
-  min-height: 44px;
-}
-
-.employee-header nav a {
-  flex: 0 0 auto;
-  white-space: nowrap;
-}
-
-/* Keep every workspace usable inside narrow mobile viewports. */
-.employee-dashboard,
-.employee-page,
-.hr-dashboard,
-.employee-management,
-.department-page {
+html,
+body {
+  margin: 0;
+  padding: 0;
   width: 100%;
-  max-width: 100%;
+  max-width: 100vw;
   overflow-x: hidden;
+  -webkit-text-size-adjust: 100%;
 }
 
-.panel,
-.hr-panel,
-.hr-metric,
-.employee-form,
-.employee-directory,
-.department-form,
-.department-list,
-.timesheet-form-panel,
-.timesheet-page > .table-wrapper {
-  min-width: 0;
-  max-width: 100%;
-}
-
+/* Ensure all media adapts to parent containers */
 img,
 svg,
 video,
 canvas {
   max-width: 100%;
+  height: auto;
 }
 
-input,
-select,
-textarea,
-button {
-  max-width: 100%;
-}
-
+/* --------------------------------------------------------------------------
+   Touch-Scrollable Containers (Tables, Ledgers, Scrollbars)
+   -------------------------------------------------------------------------- */
 .table-wrapper,
 .hr-table-wrap,
 .employee-table-wrap,
 .department-list,
-.activity-scroll {
+.activity-scroll,
+.table-responsive-container,
+.table-responsive-wrapper,
+.reporting-table-container,
+.org-canvas-viewport,
+.recent-punch-table-wrap,
+.ledger-scroll-container {
+  width: 100%;
+  max-width: 100%;
   overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
   scrollbar-width: thin;
 }
 
 .table-wrapper table,
 .hr-table-wrap table,
-.employee-table-wrap table {
-  min-width: 42rem;
+.employee-table-wrap table,
+.reporting-table-container table {
+  min-width: 600px;
 }
 
-.timesheet-actions {
-  white-space: normal;
-  min-width: 13rem;
-}
-
-.timesheet-actions button,
-.row-actions button,
-.leave-actions button {
-  margin: .2rem;
-}
-
-.form-actions {
-  display: flex;
-  flex-wrap: wrap;
-  gap: .6rem;
-  align-items: center;
-}
-
-.payroll-details {
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-}
-
-.payroll-details > div {
-  min-width: 0;
-  min-height: 4.5rem;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  visibility: visible;
-}
-
-.payroll-details > div:nth-child(-n + 3) {
-  border: 1px solid #b8d5ff;
-  background: #f3f8ff;
-}
-
-.payroll-details > div:nth-child(-n + 3) dd {
-  color: #123b70;
-  font-size: 1.15rem;
-}
-
-.salary-definition {
-  max-width: 38rem;
-  margin: .45rem 0 0;
-  color: #687586;
-  font-size: .84rem;
-  line-height: 1.5;
-}
-
-.payroll-stat-pending {
-  border-color: #f2d38a !important;
-  background: #fffaf0;
-}
-
-.payroll-stat-pending strong {
-  color: #9a6700 !important;
-  font-size: clamp(1.2rem, 2.5vw, 1.65rem);
-}
-
-.payroll-stat-pending small {
-  color: #795b16;
-  font-weight: 700;
-}
-
-.payroll-panel-actions {
-  display: flex;
-  flex-wrap: wrap;
-  gap: .5rem;
-  justify-content: flex-end;
-}
-
-.payslip-document {
-  margin-top: 1.25rem;
-  padding: 1.25rem;
-  border: 1px solid #dfe5eb;
-  border-radius: 10px;
-  background: #fbfcfc;
-}
-
-.payslip-identity,
-.payslip-meta,
-.payslip-summary,
-.payslip-columns section > div {
-  display: flex;
-  justify-content: space-between;
-  gap: 1rem;
-}
-
-.payslip-identity {
-  align-items: center;
-  padding-bottom: 1rem;
-  border-bottom: 2px solid #176b70;
-}
-
-.payslip-identity strong,
-.payslip-identity span,
-.payslip-meta span,
-.payslip-meta strong,
-.payslip-columns section > div span,
-.payslip-columns section > div strong,
-.payslip-summary span,
-.payslip-summary strong {
-  display: block;
-}
-
-.payslip-identity strong { color: #182230; font-size: 1.1rem; }
-.payslip-identity div > span { margin-top: .25rem; color: #687586; font-size: .8rem; }
-.payslip-meta { grid-template-columns: repeat(3, minmax(0, 1fr)); display: grid; padding: 1rem 0; border-bottom: 1px solid #dfe5eb; }
-.payslip-meta span,.payslip-columns section > div span,.payslip-summary span { color: #687586; font-size: .78rem; }
-.payslip-meta strong { margin-top: .25rem; color: #182230; font-size: .86rem; }
-.payslip-columns { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1.25rem; padding: 1rem 0; }
-.payslip-columns section { min-width: 0; }
-.payslip-columns h3 { margin: 0 0 .45rem; color: #176b70; font-size: .9rem; }
-.payslip-columns section > div { padding: .55rem 0; border-bottom: 1px solid #edf0f2; }
-.payslip-columns section > div strong { color: #182230; font-size: .86rem; }
-.payslip-columns .deduction { color: #b42318; }
-.payslip-summary { padding: 1rem; border-radius: 8px; background: #e4f1ef; }
-.payslip-summary > div:last-child { text-align: right; }
-.payslip-summary strong { margin-top: .25rem; color: #176b70; font-size: 1.2rem; }
-
-.payroll-details dt small {
-  display: block;
-  margin-top: .2rem;
-  color: #687586;
-  font-size: .7rem;
-  font-weight: 500;
-}
-
-.auth-page,
-.auth-layout {
-  padding-top: max(1rem, env(safe-area-inset-top));
-  padding-right: max(1rem, env(safe-area-inset-right));
-  padding-bottom: max(1rem, env(safe-area-inset-bottom));
-  padding-left: max(1rem, env(safe-area-inset-left));
-}
-
-.auth-card,
-.auth-panel {
-  min-width: 0;
-  max-width: 100%;
-}
-
-.employee-header button,
-button {
-  touch-action: manipulation;
-}
-
-@media (max-width: 800px) {
-  .employee-header {
-    flex-wrap: wrap;
-    gap: .75rem;
+/* --------------------------------------------------------------------------
+   Mobile Form Controls (iOS Safari Auto-Zoom Prevention)
+   -------------------------------------------------------------------------- */
+@media (max-width: 768px) {
+  input[type="text"],
+  input[type="email"],
+  input[type="password"],
+  input[type="number"],
+  input[type="date"],
+  input[type="month"],
+  input[type="file"],
+  select,
+  textarea {
+    font-size: 16px !important; /* 16px threshold prevents iOS auto-zoom */
   }
+}
 
-  .employee-header .brand {
-    min-width: auto;
-    flex: 1 1 auto;
-  }
-
-  .employee-header-actions {
-    margin-left: 0;
-  }
-
-  .employee-header nav {
-    order: 3;
-    flex-basis: 100%;
-    min-height: 44px;
-    gap: 1rem;
-  }
-
+/* --------------------------------------------------------------------------
+   Tier 1: Ultra-Wide & 4K Displays (>= 1920px)
+   -------------------------------------------------------------------------- */
+@media (min-width: 1920px) {
   .employee-dashboard,
+  .employee-documents-hub,
+  .employee-attendance-hub,
+  .employee-leaves-hub,
+  .employee-timesheets-hub,
+  .employee-payroll-hub,
+  .employee-profile-hub,
+  .hr-dashboard-hub,
+  .hr-management-hub {
+    max-width: 1600px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .doc-hero-banner h1,
+  .att-hero-banner h1,
+  .timesheet-hero-banner h1,
+  .prof-identity-info h1,
+  .payroll-hero-banner h1,
+  .emp-hero-left h1 {
+    font-size: 2.5rem;
+  }
+}
+
+/* --------------------------------------------------------------------------
+   Tier 2: Laptops & Medium Desktops (1024px - 1439px)
+   -------------------------------------------------------------------------- */
+@media (max-width: 1200px) {
+  .doc-hero-banner,
+  .att-hero-banner,
+  .timesheet-hero-banner,
+  .prof-hero-banner,
+  .payroll-hero-banner,
+  .emp-hero-banner {
+    padding: 2rem 2.25rem;
+  }
+
+  .doc-kpi-grid,
+  .att-kpi-grid,
+  .timesheet-kpi-grid,
+  .prof-kpi-grid,
+  .payroll-kpi-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1.15rem;
+  }
+}
+
+/* --------------------------------------------------------------------------
+   Tier 3: iPad & Tablets (768px - 1023px, Portrait & Landscape)
+   -------------------------------------------------------------------------- */
+@media (max-width: 992px) {
+  /* Employee & HR Hub Containers */
+  .employee-dashboard,
+  .employee-documents-hub,
+  .employee-attendance-hub,
+  .employee-leaves-hub,
+  .employee-timesheets-hub,
+  .employee-payroll-hub,
+  .employee-profile-hub,
   .hr-dashboard,
   .employee-management,
   .department-page,
-  .employee-page {
-    min-height: calc(100vh - 7rem);
-    padding-top: 1.5rem;
-    padding-right: max(1rem, env(safe-area-inset-right));
-    padding-bottom: max(2rem, env(safe-area-inset-bottom));
-    padding-left: max(1rem, env(safe-area-inset-left));
+  .timesheet-page {
+    padding: 1.5rem 1.5rem 3.5rem;
   }
 
-  .employee-dashboard,
-  .employee-page,
-  .hr-dashboard,
-  .employee-management,
-  .department-page {
-    width: 100%;
+  /* Hero Banners Stacking */
+  .doc-hero-banner,
+  .att-hero-banner,
+  .timesheet-hero-banner,
+  .prof-hero-banner,
+  .payroll-hero-banner,
+  .emp-hero-banner {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1.5rem;
+    padding: 1.75rem 1.75rem;
+  }
+
+  .doc-hero-left,
+  .att-hero-left,
+  .timesheet-hero-left,
+  .prof-hero-left,
+  .payroll-hero-left,
+  .emp-hero-left {
     max-width: 100%;
-    overflow-x: hidden;
   }
 
-  .dashboard-heading,
-  .timesheet-heading,
-  .timesheet-table-heading,
-  .hr-heading,
-  .department-heading,
-  .employee-management-heading {
-    gap: 1rem;
-  }
-
-  .attendance-card,
-  .dashboard-heading,
-  .hr-heading,
-  .department-heading,
-  .employee-management-heading {
+  .att-hero-actions,
+  .timesheet-hero-actions,
+  .prof-hero-actions,
+  .payroll-hero-actions {
+    width: 100%;
+    justify-content: flex-start;
     align-items: flex-start;
+  }
+
+  /* Dual Column Splits -> Stacked Vertical */
+  .dashboard-columns-grid,
+  .leave-workspace-grid,
+  .dossier-sections-grid,
+  .timesheet-workspace-grid {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+
+  /* KPI Grid Adaptation */
+  .doc-kpi-grid,
+  .att-kpi-grid,
+  .timesheet-kpi-grid,
+  .prof-kpi-grid,
+  .payroll-kpi-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  /* Smart Punch Station Banner */
+  .punch-station-banner {
     flex-direction: column;
-  }
-
-  .attendance-card {
-    gap: 1.25rem;
-  }
-
-  .attendance-card-content,
-  .timer-display {
-    width: 100%;
-  }
-
-  .timer-display {
-    align-items: center;
-  }
-
-  .work-timer {
-    font-size: clamp(1.8rem, 9vw, 2.25rem);
-  }
-
-  .card-actions {
-    width: 100%;
-  }
-
-  .card-actions button {
-    flex: 1;
-    min-height: 48px;
-  }
-
-  .hr-metrics,
-  .attendance-summary,
-  .department-metrics {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-
-  .hr-panel-heading,
-  .directory-heading,
-  .list-heading {
-    align-items: stretch;
-    flex-direction: column;
-  }
-
-  .hr-panel-heading input,
-  .directory-filters input,
-  .directory-filters select {
-    width: 100%;
-  }
-
-  .leave-filters,
-  .directory-filters,
-  .report-filters {
-    width: 100%;
-  }
-
-  .leave-form,
-  .timesheet-form,
-  .employee-form-grid,
-  .department-form-grid {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-
-  .directory-filters,
-  .week-picker,
-  .report-filters {
-    width: 100%;
-  }
-
-  .directory-filters input,
-  .directory-filters select,
-  .week-picker input,
-  .week-picker select,
-  .report-filters input,
-  .report-filters select {
-    width: 100%;
-  }
-
-  .table-wrapper,
-  .hr-table-wrap,
-  .employee-table-wrap {
-    -webkit-overflow-scrolling: touch;
-  }
-}
-
-@media (max-width: 520px) {
-  .employee-header-actions span {
-    display: none;
-  }
-
-  .employee-header-actions button {
-    min-height: 42px;
-    padding: .55rem .7rem;
-  }
-
-  .auth-page {
     align-items: flex-start;
-    padding-top: max(1.25rem, env(safe-area-inset-top));
+    gap: 1.5rem;
   }
 
-  .auth-card {
-    padding: 1.25rem;
-    border-radius: 12px;
-  }
-
-  .form-grid {
-    grid-template-columns: 1fr;
-  }
-
-  .payroll-details {
-    grid-template-columns: 1fr;
-  }
-
-  .payroll-panel-actions {
+  .punch-actions-cluster {
     width: 100%;
     justify-content: stretch;
   }
 
-  .payslip-meta,
-  .payslip-columns {
-    grid-template-columns: 1fr;
-  }
-
-  .payslip-identity {
-    align-items: flex-start;
-    flex-direction: column;
-  }
-
-  .payslip-summary {
-    align-items: flex-start;
-    flex-direction: column;
-  }
-
-  .payslip-summary > div:last-child {
-    text-align: left;
-  }
-
-  .payroll-panel-actions button {
+  .punch-actions-cluster button {
     flex: 1;
   }
 
-  .auth-header h1 {
-    font-size: 1.65rem;
-  }
-
-  .summary-grid,
-  .hr-metrics,
-  .attendance-summary,
-  .department-metrics,
-  .leave-balance-cards {
+  /* Payslip Dual Columns */
+  .payslip-dual-columns {
     grid-template-columns: 1fr;
-  }
-
-  .leave-form,
-  .timesheet-form,
-  .employee-form-grid,
-  .department-form-grid {
-    grid-template-columns: 1fr;
-  }
-
-  .reason-field,
-  .description-field {
-    grid-column: auto;
-  }
-
-  .timesheet-heading,
-  .timesheet-table-heading,
-  .hr-heading,
-  .department-heading,
-  .employee-management-heading,
-  .hr-panel-heading,
-  .directory-heading,
-  .list-heading {
-    align-items: stretch;
-    flex-direction: column;
-  }
-
-  .timesheet-heading h1,
-  .hr-heading h1,
-  .department-heading h1,
-  .employee-management-heading h1 {
-    font-size: clamp(1.65rem, 8vw, 2.1rem);
-  }
-
-  .timesheet-summary {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-
-  .timesheet-summary .panel {
-    padding: .9rem;
-  }
-
-  .timesheet-summary strong {
-    font-size: 1.45rem;
-  }
-
-  .timesheet-form button,
-  .form-actions button,
-  .timesheet-table-heading button,
-  .header-create-button,
-  .save-button,
-  .refresh-button {
-    width: 100%;
-  }
-
-  .summary-grid strong,
-  .attendance-summary strong {
-    font-size: 1.65rem;
-  }
-
-  .activity-scroll .activity-header,
-  .activity-scroll .activity-row {
-    min-width: 31rem;
-  }
-
-  .activity-scroll .activity-header,
-  .activity-scroll .activity-row {
-    overflow: hidden;
-  }
-
-  .employee-profile {
-    padding: 1rem;
-  }
-
-  .employee-profile .profile-identity {
-    min-width: 0;
-  }
-
-  .employee-profile h2,
-  .employee-profile p {
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-  }
-
-  .dashboard-heading h1 {
-    font-size: 1.85rem;
-  }
-
-  .dashboard-heading time {
-    max-width: 100%;
-    font-size: .78rem;
-  }
-
-  .panel,
-  .hr-panel {
-    padding: 1rem;
-    border-radius: 10px;
+    gap: 1.5rem;
   }
 }
 
+/* --------------------------------------------------------------------------
+   Tier 4: Mobile & Phablets (480px - 767px: iPhone / Android)
+   -------------------------------------------------------------------------- */
+@media (max-width: 768px) {
+  /* Safe-Area Aware Main Hub Containers */
+  .employee-dashboard,
+  .employee-documents-hub,
+  .employee-attendance-hub,
+  .employee-leaves-hub,
+  .employee-timesheets-hub,
+  .employee-payroll-hub,
+  .employee-profile-hub,
+  .hr-dashboard,
+  .employee-management,
+  .department-page,
+  .timesheet-page {
+    padding: 1.25rem 1rem max(2.5rem, env(safe-area-inset-bottom));
+  }
+
+  /* Typography Adjustments */
+  h1 {
+    font-size: clamp(22px, 6vw, 28px);
+  }
+
+  .doc-hero-banner h1,
+  .att-hero-banner h1,
+  .timesheet-hero-banner h1,
+  .prof-identity-info h1,
+  .payroll-hero-banner h1,
+  .emp-hero-left h1 {
+    font-size: clamp(22px, 5.5vw, 28px);
+  }
+
+  /* 1-Column KPI Grids for Crisp Scannability */
+  .doc-kpi-grid,
+  .att-kpi-grid,
+  .timesheet-kpi-grid,
+  .prof-kpi-grid,
+  .payroll-kpi-grid {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+
+  /* Hero Banner Meta Tags Wrapping */
+  .emp-meta-pills {
+    gap: 0.45rem;
+  }
+
+  .meta-pill-tag {
+    font-size: 0.72rem;
+    padding: 0.24rem 0.65rem;
+  }
+
+  /* Form Grids -> Single Column */
+  .doc-form-grid,
+  .leave-form-grid,
+  .task-log-form-grid,
+  .dossier-fields-grid,
+  .employee-form-grid,
+  .department-form-grid {
+    grid-template-columns: 1fr !important;
+    gap: 0.9rem;
+  }
+
+  /* Modal Lightbox Sizing */
+  .photo-modal-card {
+    max-width: calc(100vw - 2rem);
+    max-height: 85vh;
+  }
+
+  .photo-modal-head,
+  .photo-modal-actions {
+    padding: 1rem 1.25rem;
+  }
+
+  .photo-modal-actions {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0.75rem;
+  }
+
+  .photo-modal-btn-cluster {
+    width: 100%;
+    justify-content: stretch;
+  }
+
+  .photo-modal-btn-cluster button,
+  .photo-modal-btn-cluster a,
+  .photo-modal-btn-cluster label {
+    flex: 1;
+    justify-content: center;
+  }
+
+  /* Segmented Tab Pill Navbars */
+  .payroll-tab-pills,
+  .doc-filter-pills {
+    width: 100%;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    flex-wrap: nowrap;
+    padding-bottom: 0.35rem;
+  }
+
+  .payroll-tab-pills::-webkit-scrollbar,
+  .doc-filter-pills::-webkit-scrollbar {
+    display: none;
+  }
+
+  .payroll-tab-btn,
+  .doc-filter-btn {
+    flex-shrink: 0;
+  }
+
+  /* Payslip Executive Summary Row */
+  .payslip-summary-trio {
+    grid-template-columns: 1fr !important;
+    gap: 0.75rem;
+  }
+}
+
+/* --------------------------------------------------------------------------
+   Tier 5: Small Mobile Screens (320px - 479px: iPhone SE, Galaxy Mini)
+   -------------------------------------------------------------------------- */
+@media (max-width: 480px) {
+  .employee-dashboard,
+  .employee-documents-hub,
+  .employee-attendance-hub,
+  .employee-leaves-hub,
+  .employee-timesheets-hub,
+  .employee-payroll-hub,
+  .employee-profile-hub {
+    padding: 1rem 0.75rem max(2rem, env(safe-area-inset-bottom));
+  }
+
+  .doc-hero-banner,
+  .att-hero-banner,
+  .timesheet-hero-banner,
+  .prof-hero-banner,
+  .payroll-hero-banner,
+  .emp-hero-banner {
+    padding: 1.35rem 1.15rem;
+    border-radius: 16px;
+  }
+
+  .hero-kicker-pill {
+    font-size: 0.72rem;
+    padding: 0.25rem 0.65rem;
+  }
+
+  .kpi-big-num {
+    font-size: 1.7rem;
+  }
+
+  .att-btn,
+  .doc-btn,
+  .touch-btn {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .prof-action-buttons-row {
+    width: 100%;
+    flex-direction: column;
+  }
+
+  .prof-action-buttons-row button,
+  .prof-action-buttons-row label {
+    width: 100%;
+    justify-content: center;
+  }
+
+  /* User Dossier Sections */
+  .dossier-section-card {
+    padding: 1.25rem 1rem;
+  }
+
+  /* Compact Punch Station */
+  .smart-punch-card {
+    padding: 1.25rem 1rem;
+  }
+
+  .digital-stopwatch {
+    font-size: clamp(2rem, 11vw, 2.5rem);
+  }
+}
+
+/* --------------------------------------------------------------------------
+   Tier 6: Extra Compact Mobile Screens (<= 360px: iPhone SE 1st gen, Galaxy Fold outer)
+   -------------------------------------------------------------------------- */
+@media (max-width: 360px) {
+  .employee-dashboard,
+  .employee-dashboard-hub,
+  .employee-documents-hub,
+  .employee-attendance-hub,
+  .employee-leaves-hub,
+  .employee-timesheets-hub,
+  .employee-payroll-hub,
+  .employee-profile-hub {
+    padding: 0.75rem 0.5rem max(1.75rem, env(safe-area-inset-bottom));
+  }
+
+  .doc-hero-banner,
+  .att-hero-banner,
+  .timesheet-hero-banner,
+  .prof-hero-banner,
+  .payroll-hero-banner,
+  .emp-hero-banner {
+    padding: 1.15rem 0.9rem;
+    border-radius: 12px;
+  }
+
+  .kpi-big-num {
+    font-size: 1.5rem;
+  }
+
+  .kpi-card {
+    padding: 1rem 0.85rem;
+  }
+}
+
+/* --------------------------------------------------------------------------
+   Accessibility: Reduced Motion
+   -------------------------------------------------------------------------- */
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,
   *::after {
     scroll-behavior: auto !important;
-    transition-duration: .01ms !important;
-    animation-duration: .01ms !important;
+    transition-duration: 0.01ms !important;
+    animation-duration: 0.01ms !important;
   }
 }

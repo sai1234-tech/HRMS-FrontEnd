@@ -1,4 +1,4 @@
-import { apiRequest } from "./apiClient";
+import { apiRequest, apiDownload } from "./apiClient";
 import html2canvas from "html2canvas";
 import { jsPDF } from "jspdf";
 
@@ -10,7 +10,7 @@ export function payrollPeriod(month, year) {
 export function getMySalary(month, year) {
   const period = payrollPeriod(month, year);
   return apiRequest(
-    `/v1/payroll/my/salary${period ? `?month=${period}` : ""}`
+    `/payroll/my/salary${period ? `?month=${period}` : ""}`
   );
 }
 
@@ -42,18 +42,11 @@ export function getMyPayslip(month, year) {
   const params = new URLSearchParams(period ? { month: period } : {});
 
   return apiRequest(
-    `/v1/payroll/my/payslip${params.toString() ? `?${params}` : ""}`
+    `/payroll/my/payslip${params.toString() ? `?${params}` : ""}`
   );
 }
 
 export async function downloadMyPayslip(month, year) {
-  const token = sessionStorage.getItem("hrms_token");
-
-  const apiUrl = (
-    import.meta.env.VITE_API_URL ||
-    "http://localhost:3000/api"
-  ).replace(/\/$/, "");
-
   const params = new URLSearchParams();
 
   if (month && year) {
@@ -61,59 +54,21 @@ export async function downloadMyPayslip(month, year) {
     params.set("month", formattedMonth);
   }
 
-  const response = await fetch(
-    `${apiUrl}/v1/payroll/my/payslip/download${
-      params.toString() ? `?${params}` : ""
-    }`,
-    {
-      headers: token
-        ? {
-            Authorization: `Bearer ${token}`,
-          }
-        : {},
-    }
-  );
-
-  if (!response.ok) {
-    const errorBody = await response.json().catch(() => ({}));
-
-    if (response.status === 401) {
-      throw new Error(
-        "Your session has expired. Sign in again to download the payslip."
-      );
-    }
-
-    throw new Error(
-      errorBody.message || `Payslip download failed (${response.status})`
-    );
-  }
-
-  const blob = await response.blob();
-
-  const url = URL.createObjectURL(blob);
-  const link = document.createElement("a");
-
-  link.href = url;
-  link.download = `payslip-${year}-${String(month).padStart(2, "0")}.pdf`;
-
-  document.body.appendChild(link);
-  link.click();
-  link.remove();
-
-  URL.revokeObjectURL(url);
+  const filename = `payslip-${year}-${String(month).padStart(2, "0")}.pdf`;
+  return apiDownload(`/payroll/my/payslip/download${params.toString() ? `?${params}` : ""}`, filename);
 }
 
 export function generatePayroll(data) {
-  return apiRequest("/v1/payroll/generate", { method: "POST", body: JSON.stringify(data) });
+  return apiRequest("/payroll/generate", { method: "POST", body: JSON.stringify(data) });
 }
 
 export function getPayroll(filters = {}) {
   const params = new URLSearchParams(Object.entries(filters).filter(([, value]) => value !== "" && value !== undefined));
-  return apiRequest(`/v1/payroll${params.toString() ? `?${params}` : ""}`);
+  return apiRequest(`/payroll${params.toString() ? `?${params}` : ""}`);
 }
 
 export function updateEmployeeSalary(employeeId, data) {
-  return apiRequest(`/v1/payroll/employees/${employeeId}/salary`, { method: "PATCH", body: JSON.stringify(data) });
+  return apiRequest(`/payroll/employees/${employeeId}/salary`, { method: "PATCH", body: JSON.stringify(data) });
 }
 
 export async function downloadRenderedPayslip(element, period) {
@@ -146,5 +101,5 @@ export async function downloadRenderedPayslip(element, period) {
     page += 1;
   }
 
-  pdf.save(`Quadratics-Inc-Payslip-${period}.pdf`);
+  pdf.save(`Quadratic-Systems-Inc-Payslip-${period}.pdf`);
 }

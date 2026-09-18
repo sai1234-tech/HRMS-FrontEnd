@@ -22,9 +22,13 @@ import PayrollManagement from "../pages/hr/PayrollManagement";
 import DocumentManagement from "../pages/hr/DocumentManagement";
 import AccountManagement from "../pages/admin/AccountManagement";
 import AdminDashboard from "../pages/admin/AdminDashboard";
+import OrganizationHierarchy from "../pages/organization/OrganizationHierarchy";
 
 import { useAuth } from "../context/AuthContext";
+import InitialLoader from "../components/common/InitialLoader";
 import { normalizeRole } from "../utils/auth";
+import { SidebarProvider } from "../context/SidebarContext";
+import DashboardLayout from "../components/layout/DashboardLayout";
 
 /**
  * Protect routes based on authentication and role.
@@ -34,11 +38,7 @@ function ProtectedRoute({ children, roles = [] }) {
 
   // Auth state is still loading
   if (loading) {
-    return (
-      <div className="loading-screen">
-        Loading...
-      </div>
-    );
+    return <InitialLoader />;
   }
 
   // User is not logged in
@@ -86,18 +86,30 @@ function AppRoutes() {
       />
 
 
-      {/* =========================
-          EMPLOYEE ROUTES
-      ========================== */}
-
+      {/* ===================================================
+          AUTHENTICATED APPLICATION SHELL (SIDEBAR + TOPBAR)
+      =================================================== */}
       <Route
-        path="/employee/dashboard"
         element={
-          <ProtectedRoute roles={["employee"]}>
-            <EmployeeDashboard />
+          <ProtectedRoute>
+            <SidebarProvider>
+              <DashboardLayout />
+            </SidebarProvider>
           </ProtectedRoute>
         }
-      />
+      >
+        {/* =========================
+            EMPLOYEE ROUTES
+        ========================== */}
+
+        <Route
+          path="/employee/dashboard"
+          element={
+            <ProtectedRoute roles={["employee"]}>
+              <EmployeeDashboard />
+            </ProtectedRoute>
+          }
+        />
 
       <Route
         path="/employee/attendance"
@@ -129,7 +141,16 @@ function AppRoutes() {
       <Route
         path="/employee/profile"
         element={
-          <ProtectedRoute roles={["employee"]}>
+          <ProtectedRoute roles={["employee", "hr", "admin"]}>
+            <EmployeeProfile />
+          </ProtectedRoute>
+        }
+      />
+
+      <Route
+        path="/profile"
+        element={
+          <ProtectedRoute roles={["employee", "hr", "admin"]}>
             <EmployeeProfile />
           </ProtectedRoute>
         }
@@ -144,7 +165,23 @@ function AppRoutes() {
         }
       />
 
-      <Route path="/employee/documents" element={<ProtectedRoute roles={["employee"]}><EmployeeDocuments /></ProtectedRoute>} />
+      <Route
+        path="/employee/documents"
+        element={
+          <ProtectedRoute roles={["employee", "hr", "admin"]}>
+            <EmployeeDocuments />
+          </ProtectedRoute>
+        }
+      />
+
+      <Route
+        path="/documents"
+        element={
+          <ProtectedRoute roles={["employee", "hr", "admin"]}>
+            <EmployeeDocuments />
+          </ProtectedRoute>
+        }
+      />
 
 
       {/* =========================
@@ -171,13 +208,13 @@ function AppRoutes() {
 
 
       {/* =========================
-          HR / ADMIN ROUTES
+          HR / ADMIN GOVERNANCE ROUTES
       ========================== */}
 
       <Route
         path="/hr/dashboard"
         element={
-          <ProtectedRoute roles={["hr"]}>
+          <ProtectedRoute roles={["hr", "admin"]}>
             <HRDashboard />
           </ProtectedRoute>
         }
@@ -186,7 +223,7 @@ function AppRoutes() {
       <Route
         path="/hr/departments"
         element={
-          <ProtectedRoute roles={["hr"]}>
+          <ProtectedRoute roles={["hr", "admin"]}>
             <DepartmentManagement />
           </ProtectedRoute>
         }
@@ -195,7 +232,7 @@ function AppRoutes() {
       <Route
         path="/hr/employees"
         element={
-          <ProtectedRoute roles={["hr"]}>
+          <ProtectedRoute roles={["hr", "admin"]}>
             <EmployeeManagement />
           </ProtectedRoute>
         }
@@ -204,7 +241,7 @@ function AppRoutes() {
       <Route
         path="/hr/timesheets"
         element={
-          <ProtectedRoute roles={["hr"]}>
+          <ProtectedRoute roles={["hr", "admin"]}>
             <TimesheetManagement />
           </ProtectedRoute>
         }
@@ -213,14 +250,17 @@ function AppRoutes() {
       <Route
         path="/hr/payroll"
         element={
-          <ProtectedRoute roles={["hr"]}>
+          <ProtectedRoute roles={["hr", "admin"]}>
             <PayrollManagement />
           </ProtectedRoute>
         }
       />
 
-      <Route path="/hr/documents" element={<ProtectedRoute roles={["hr"]}><DocumentManagement /></ProtectedRoute>} />
-
+      <Route path="/hr/documents" element={<ProtectedRoute roles={["hr", "admin"]}><DocumentManagement /></ProtectedRoute>} />
+      <Route path="/hr/organization" element={<ProtectedRoute roles={["hr", "admin"]}><OrganizationHierarchy /></ProtectedRoute>} />
+      <Route path="/organization" element={<ProtectedRoute roles={["employee", "hr", "admin"]}><OrganizationHierarchy /></ProtectedRoute>} />
+      <Route path="/employee/organization" element={<ProtectedRoute roles={["employee", "hr", "admin"]}><OrganizationHierarchy /></ProtectedRoute>} />
+      </Route>
 
       {/* =========================
           UNAUTHORIZED

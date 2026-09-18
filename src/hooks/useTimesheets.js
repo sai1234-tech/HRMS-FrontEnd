@@ -1,5 +1,13 @@
 import { useCallback, useEffect, useState } from "react";
-import { createTimesheet, deleteTimesheet, getMyWeek, submitTimesheet, submitWeek, updateTimesheet } from "../services/timesheetService";
+import {
+  createTimesheet,
+  deleteTimesheet,
+  getMyWeek,
+  submitTimesheet,
+  submitWeek,
+  updateTimesheet,
+} from "../services/timesheetService";
+import { useSyncRefresh } from "../utils/syncManager";
 
 function normalizeWeek(response) {
   const data = response?.data || response || {};
@@ -17,24 +25,30 @@ export function useTimesheets() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
-  const loadWeek = useCallback(async (date) => {
-    setLoading(true);
+  const loadWeek = useCallback(async (date, silent = false) => {
+    if (!silent) setLoading(true);
     setError("");
-    setActiveDate(date || "");
-    try {
-      setTimesheetWeek(normalizeWeek(await getMyWeek(date)));
-    } catch (requestError) {
-      setError(requestError.message);
-    } finally {
-      setLoading(false);
-    }
-  }, []);
+    const targetDate = date !== undefined ? date : activeDate;
+    if (date !== undefined) setActiveDate(date || "");
 
-  useEffect(() => { loadWeek(); }, [loadWeek]);
+    try {
+      setTimesheetWeek(normalizeWeek(await getMyWeek(targetDate)));
+    } catch (requestError) {
+      if (!silent) setError(requestError.message);
+    } finally {
+      if (!silent) setLoading(false);
+    }
+  }, [activeDate]);
+
+  useEffect(() => {
+    loadWeek();
+  }, [loadWeek]);
+
+  useSyncRefresh(() => loadWeek(activeDate, true), { interval: 4000, silent: true });
 
   const performAction = async (action) => {
     await action();
-    await loadWeek(activeDate);
+    await loadWeek(activeDate, true);
   };
 
   return {

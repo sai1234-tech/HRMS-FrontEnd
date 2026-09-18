@@ -1,93 +1,37 @@
-const API_URL = `${import.meta.env.VITE_API_URL || "http://localhost:3000/api"}/auth`;
-
-const handleResponse = async (response) => {
-  const data = await response.json();
-
-  if (!response.ok) {
-    throw new Error(
-      data.message || "Something went wrong"
-    );
-  }
-
-  return data;
-};
+import { apiRequest } from "./apiClient";
 
 export const signupUser = async (userData) => {
-  const response = await fetch(`${API_URL}/signup`, {
+  return apiRequest("/auth/signup", {
     method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
     body: JSON.stringify(userData),
   });
-
-  const data = await response.json();
-
-  if (!response.ok) {
-    throw new Error(data.message || "Signup failed");
-  }
-
-  return data;
 };
 
 export const loginUser = async (credentials) => {
-  const response = await fetch(
-    `${API_URL}/login`,
-    {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(credentials),
-    }
-  );
-
-  return handleResponse(response);
+  return apiRequest("/auth/login", {
+    method: "POST",
+    body: JSON.stringify(credentials),
+  });
 };
 
 export const setupFirstAdmin = async (accountData) => {
-  const response = await fetch(`${API_URL}/setup-admin`, {
+  return apiRequest("/auth/setup-admin", {
     method: "POST",
-    headers: { "Content-Type": "application/json" },
     body: JSON.stringify(accountData),
   });
-
-  return handleResponse(response);
 };
 
-export const getCurrentUser = async (token) => {
-  const response = await fetch(
-    `${API_URL}/me`,
-    {
-      method: "GET",
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    }
-  );
-
-  return handleResponse(response);
+export const getCurrentUser = async () => {
+  return apiRequest("/auth/me");
 };
 
 export const createManagedAccount = async (accountData) => {
-  const token = sessionStorage.getItem("hrms_token");
-  const response = await fetch(`${API_URL}/accounts`, {
+  return apiRequest("/auth/accounts", {
     method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      ...(token ? { Authorization: `Bearer ${token}` } : {}),
-    },
     body: JSON.stringify(accountData),
   });
-
-  return handleResponse(response);
 };
 
 export const getAdminSummary = async () => {
-  const token = sessionStorage.getItem("hrms_token");
-  const response = await fetch(`${API_URL}/admin-summary`, {
-    headers: token ? { Authorization: `Bearer ${token}` } : {},
-  });
-
-  return handleResponse(response);
+  return apiRequest("/auth/admin-summary");
 };
